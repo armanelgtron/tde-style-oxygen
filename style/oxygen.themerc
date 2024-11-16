@@ -1,0 +1,6 @@
+[Misc]
+Name=Oxygen
+Comment=Next-generation KDE 4 style
+
+[KDE]
+WidgetStyle=oxygen

@@ -1,0 +1,27 @@
+[Color Scheme]
+Name=Oxygen
+activeBackground=226,225,224
+activeBlend=229,228,227
+activeForeground=68,68,68
+activeTitleBtnBg=238,238,238
+alternateBackground=238,238,238
+background=214,210,208
+buttonBackground=223,220,217
+buttonForeground=33,33,33
+contrast=0
+foreground=33,33,33
+frame=239,239,239
+handle=239,239,239
+inactiveBackground=226,225,225
+inactiveBlend=229,228,227
+inactiveForeground=149,149,149
+inactiveFrame=239,239,239
+inactiveHandle=239,239,239
+inactiveTitleBtnBg=238,238,238
+linkColor=0,49,110
+selectBackground=67,172,232
+selectForeground=255,255,255
+shadeSortColumn=false
+visitedLinkColor=69,40,134
+windowBackground=255,255,255
+windowForeground=33,33,33
