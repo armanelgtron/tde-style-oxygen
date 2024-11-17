@@ -255,6 +255,8 @@ OxygenStyle::~OxygenStyle()
     delete verticalLine;
 }
 
+#define CHECKBGPIXMAP(a) ( bgWidgets[(a)] && bgWidgets[(a)] == (a)->backgroundPixmap() )
+
 void OxygenStyle::applicationPolish(const TQStyleControlElementData &ceData, ControlElementFlags, void *ptr)
 {
     if (ceData.widgetObjectTypes.contains("TQApplication")) {
@@ -303,8 +305,9 @@ void OxygenStyle::polish(const TQStyleControlElementData &ceData, ControlElement
         
     }
     else if ( 
-        !kickerMode /*&& ::tqt_cast<TQMainWindow*>(widget) == 0L*/ && widget->isTopLevel()
+        !kickerMode && widget->isTopLevel()
         && ( widget->isDialog() || ::tqt_cast<TQMainWindow*>(widget) || widget->isModal() )
+        && !widget->backgroundPixmap()
     )
     {
         TQImage aImg(widget->rect().width(),widget->rect().height(),32);
@@ -388,6 +391,11 @@ void OxygenStyle::unPolish(const TQStyleControlElementData &ceData, ControlEleme
 	} else if ( !qstrcmp(widget->name(), "tde toolbar widget") ) {
 		removeObjectEventHandler(ceData, elementFlags, ptr, this);
 	}
+    else if( CHECKBGPIXMAP(widget) )
+    {
+        widget->setBackgroundPixmap(0L);
+        removeObjectEventHandler(ceData, elementFlags, ptr, this);
+    }
     // TODO
 	
 	if ( ::tqt_cast<TQProgressBar*>(widget) )
@@ -2231,7 +2239,7 @@ void OxygenStyle::drawPrimitive(PrimitiveElement pe,
             */
             
             TQWidget* w = dynamic_cast<TQWidget*>(p->device());
-            if( bgWidgets[w->parentWidget()] )
+            if( CHECKBGPIXMAP(w->parentWidget()) )
             {
                 // FIXME!!
                 renderWindowBackground( p, w->parentWidget()->rect(), cg );
@@ -2262,7 +2270,7 @@ void OxygenStyle::drawPrimitive(PrimitiveElement pe,
                 w->setBackgroundMode(PaletteBackground);
             p->fillRect(r, cg.brush(TQColorGroup::Background));
             //renderWindowBackground( p, w->parentWidget()->rect(), cg );
-            if( bgWidgets[w->parentWidget()] )
+            if( CHECKBGPIXMAP(w->parentWidget()) )
             {
                 renderWindowBackground( p, w->parentWidget()->rect(), cg );
                 // FIXME!
@@ -2329,7 +2337,7 @@ void OxygenStyle::drawPrimitive(PrimitiveElement pe,
         case PE_DockWindowSeparator: {
             p->fillRect(r, cg.background());
             TQWidget* w = dynamic_cast<TQWidget*>(p->device());
-            if( bgWidgets[w->parentWidget()] )
+            if( CHECKBGPIXMAP(w->parentWidget()) )
             {
                 // FIXME!!
                 //renderWindowBackground( p, w->parentWidget()->rect(), cg );
@@ -3168,7 +3176,7 @@ void OxygenStyle::drawControl(ControlElement element,
         case CE_DockWindowEmptyArea:
             p->fillRect(r, cg.background());
             //renderWindowBackground( p, widget->topLevelWidget()->rect(), cg );
-            if( bgWidgets[widget->parentWidget()] )
+            if( CHECKBGPIXMAP(widget->parentWidget()) )
             {
                 // FIXME!!
                 //renderWindowBackground( p, widget->parentWidget()->rect(), cg );
@@ -3198,7 +3206,7 @@ void OxygenStyle::drawControl(ControlElement element,
         case CE_RadioButtonLabel:*/
         /*case CE_HeaderLabel:
         {
-            if( bgWidgets[widget->parentWidget()] )
+            if( CHECKBGPIXMAP(widget->parentWidget()) )
             {
                 // FIXME!!
                 renderWindowBackground( p, widget->parentWidget()->rect(), cg );
@@ -3998,7 +4006,7 @@ bool OxygenStyle::objectEventHandler( const TQStyleControlElementData &ceData, C
     TQWidget * widget = ::tqt_cast<TQWidget*>(obj);
     if( widget && widget->isTopLevel() && ev->type() == TQEvent::Resize )
     {
-        if( bgWidgets[widget] )
+        if( CHECKBGPIXMAP(widget) )
         {
             TQPixmap * result = bgWidgets[widget];
             
