@@ -2270,7 +2270,8 @@ void OxygenStyle::drawPrimitive(PrimitiveElement pe,
                 w->setBackgroundMode(PaletteBackground);
             p->fillRect(r, cg.brush(TQColorGroup::Background));
             //renderWindowBackground( p, w->parentWidget()->rect(), cg );
-            if( CHECKBGPIXMAP(w->parentWidget()) )
+            // FIXME
+            //if( CHECKBGPIXMAP(w->parentWidget()) )
             {
                 renderWindowBackground( p, w->parentWidget()->rect(), cg );
                 // FIXME!
