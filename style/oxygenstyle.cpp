@@ -990,7 +990,15 @@ void OxygenStyle::renderGradient(TQPainter *painter,
 
 void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const TQColorGroup &cg ) const
 {
-    //return;
+    renderWindowBackground(p,r,r,cg);
+}
+
+void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const TQRect &w_r, const TQColorGroup &cg, int fx, int fy ) const
+{
+    
+    int w_w = w_r.width();
+    int w_h = w_r.height();
+    
     int r_w = r.width();
     int r_h = r.height();
     int r_x, r_y, r_x2, r_y2;
@@ -1072,8 +1080,8 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
     }*/
     
     // origin of the radial gradient
-    int cx = r_w/2, cy = -72;
-    int cy2 = std::min(280, (r_h-50));
+    int cx = w_w/2, cy = -72;
+    int cy2 = std::min(280, (w_h-50));
     
     for( y = r_h; y >= 0; --y )
     {
@@ -1087,17 +1095,17 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
             bc = c3.blue()  - roundf( bDiff2 * s / cy2 );
             
             p->setPen(TQColor(rc, gc, bc));
-            p->drawLine(0, y, r_w, y);
+            p->drawLine(r_x, r_y+y, r_x+r_w, r_y+y);
         }
         else
         {
             // the rest of the window
             // TODO: could just be a rect
             p->setPen(c3);
-            p->drawLine(0, y, r_w, y);
+            p->drawLine(r_x, r_y+y, r_x+r_w, r_y+y);
         }
         
-        if( y < 100 )
+        if( (fy+y) < 100 )
         {
             // it was not so hard to write radial gradient code
             // after all!!!
@@ -1108,7 +1116,7 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
             {
                 // with vertical scaling
                 // to try to match real Oxygen
-                int xs = x - cx, ys = ((y+20)*3.5) - cy;
+                int xs = (fx+x) - cx, ys = (((fy+y)+20)*3.5) - cy;
                 float s = sqrtf( xs*xs + ys*ys );
                 
                 // closest value I've found
@@ -2952,7 +2960,8 @@ void OxygenStyle::drawControl(ControlElement element,
             }
             else
             {
-                renderWindowBackground( p, widget->parentWidget()->rect(), cg );
+                //renderWindowBackground( p, widget->parentWidget()->rect(), cg );
+                renderWindowBackground( p, r, widget->parentWidget()->rect(), cg, r.top(), r.left() );
             }
 
             p->setPen(cg.foreground() );

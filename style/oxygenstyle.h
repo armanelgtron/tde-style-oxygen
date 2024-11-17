@@ -274,6 +274,7 @@ protected:
                    const bool cornerWidget = false) const;
 
     void renderWindowBackground( TQPainter * p, const TQRect &r, const TQColorGroup &cg ) const;
+    void renderWindowBackground( TQPainter * p, const TQRect &r, const TQRect &w_r, const TQColorGroup &cg, int fx=0, int fy=0 ) const;
 
     virtual void renderMenuBlendPixmap( KPixmap& pix, const TQColorGroup& cg, 
                                         const TQPopupMenu* popup ) const;
