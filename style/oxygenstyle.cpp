@@ -3202,7 +3202,8 @@ void OxygenStyle::drawControl(ControlElement element,
 
                 renderGradient(p, r, c1, c2, true);
             }*/
-                renderWindowBackground( p, widget->topLevelWidget()->rect(), cg );
+                //renderWindowBackground( p, widget->topLevelWidget()->rect(), cg );
+                renderWindowBackground( p, r, widget->topLevelWidget()->rect(), cg, r.left(), r.top() );
 
 //             if ( _drawToolBarSeparator ) {
 //                 p->setPen( getColor(cg, PanelDark) );
