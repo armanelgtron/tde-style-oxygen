@@ -1085,7 +1085,7 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
     
     for( y = r_h; y >= 0; --y )
     {
-        if( y < cy2 )
+        if( (fy+y) < cy2 )
         {
             // simple vertical gradient
             float s = cy2 - y;
@@ -1095,14 +1095,14 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
             bc = c3.blue()  - roundf( bDiff2 * s / cy2 );
             
             p->setPen(TQColor(rc, gc, bc));
-            p->drawLine(r_x, r_y+y, r_x+r_w, r_y+y);
+            p->drawLine(r_x, r_y+y, r_x2, r_y+y);
         }
         else
         {
             // the rest of the window
             // TODO: could just be a rect
             p->setPen(c3);
-            p->drawLine(r_x, r_y+y, r_x+r_w, r_y+y);
+            p->drawLine(r_x, r_y+y, r_x2, r_y+y);
         }
         
         if( (fy+y) < 100 )
@@ -1142,7 +1142,7 @@ void OxygenStyle::renderWindowBackground( TQPainter * p, const TQRect &r, const 
                     */
                     
                     p->setPen(TQColor(rc, gc, bc));
-                    p->drawPoint(x, y);
+                    p->drawPoint(r_x+x, r_y+y);
                 }
             }
         }
@@ -2961,7 +2961,7 @@ void OxygenStyle::drawControl(ControlElement element,
             else
             {
                 //renderWindowBackground( p, widget->parentWidget()->rect(), cg );
-                renderWindowBackground( p, r, widget->parentWidget()->rect(), cg, r.top(), r.left() );
+                renderWindowBackground( p, r, widget->parentWidget()->rect(), cg, r.left(), r.top() );
             }
 
             p->setPen(cg.foreground() );
