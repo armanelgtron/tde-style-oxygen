@@ -255,7 +255,7 @@ OxygenStyle::~OxygenStyle()
     delete verticalLine;
 }
 
-#define CHECKBGPIXMAP(a) ( bgWidgets[(a)] && bgWidgets[(a)] == (a)->backgroundPixmap() )
+#define CHECKBGPIXMAP(a) ( bgWidgets2[(a)] && bgWidgets2[(a)] == (a)->backgroundPixmap() )
 
 void OxygenStyle::applicationPolish(const TQStyleControlElementData &ceData, ControlElementFlags, void *ptr)
 {
@@ -324,6 +324,10 @@ void OxygenStyle::polish(const TQStyleControlElementData &ceData, ControlElement
         // (and then maybe pull from it later)
         widget->setBackgroundPixmap(*result);
         //widget->setErasePixmap(*result);
+        
+        // and uh, tqt gives us a diff pixmap pointer. we just use it as comparison anyway
+        // there's probably a better solution, but hey
+        bgWidgets2[widget] = widget->backgroundPixmap();
         
         // we'll update it on resize
         installObjectEventHandler(ceData, elementFlags, ptr, this);
@@ -394,6 +398,8 @@ void OxygenStyle::unPolish(const TQStyleControlElementData &ceData, ControlEleme
     else if( CHECKBGPIXMAP(widget) )
     {
         widget->setBackgroundPixmap(0L);
+        bgWidgets[  widget ] = 0;
+        bgWidgets2[ widget ] = 0;
         removeObjectEventHandler(ceData, elementFlags, ptr, this);
     }
     // TODO
@@ -2278,13 +2284,14 @@ void OxygenStyle::drawPrimitive(PrimitiveElement pe,
                 w->setBackgroundMode(PaletteBackground);
             p->fillRect(r, cg.brush(TQColorGroup::Background));
             //renderWindowBackground( p, w->parentWidget()->rect(), cg );
-            // FIXME
-            //if( CHECKBGPIXMAP(w->parentWidget()) )
+            if( w && w->parentWidget() && CHECKBGPIXMAP(w->parentWidget()) )
             {
-                renderWindowBackground( p, w->parentWidget()->rect(), cg );
+                //renderWindowBackground( p, w->parentWidget()->rect(), cg );
                 // FIXME!
                 //copyBlt( p, bgWidgets[w->parentWidget()] );
                 //p->drawPixmap( 0, 0, *bgWidgets[w->parentWidget()], r.bottom(), r.right() );
+                
+                renderWindowBackground( p, r, w->parentWidget()->rect(), cg, r.left(), r.top() );
             }
 
             if ( _drawToolBarSeparator ) {
@@ -3203,7 +3210,10 @@ void OxygenStyle::drawControl(ControlElement element,
                 renderGradient(p, r, c1, c2, true);
             }*/
                 //renderWindowBackground( p, widget->topLevelWidget()->rect(), cg );
-                renderWindowBackground( p, r, widget->topLevelWidget()->rect(), cg, r.left(), r.top() );
+                if( widget->topLevelWidget() && CHECKBGPIXMAP(widget->parentWidget()) )
+                {
+                    renderWindowBackground( p, r, widget->topLevelWidget()->rect(), cg, r.left(), r.top() );
+                }
 
 //             if ( _drawToolBarSeparator ) {
 //                 p->setPen( getColor(cg, PanelDark) );

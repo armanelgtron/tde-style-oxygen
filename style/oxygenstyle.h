@@ -321,6 +321,7 @@ private:
     
     // hacky gradient background
     TQMap<TQWidget*, TQPixmap*> bgWidgets;
+    TQMap<TQWidget*, const TQPixmap*> bgWidgets2; // ?!
 
     // pixmap cache.
     enum CacheEntryType {
